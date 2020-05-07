@@ -138,7 +138,8 @@ def test_cpp17(tmp_path):
     if os.environ.get('APPVEYOR_BUILD_WORKER_IMAGE', '') == 'Visual Studio 2015':
         pytest.skip('Visual Studio 2015 does not support C++17')
 
-    add_env = {'CIBW_SKIP': 'cp27-win* pp27-win32'}
+    add_env = {'CIBW_SKIP': 'cp27-win* pp27-win32',
+               'CIBW_BEFORE_BUILD_WINDOWS': '''python -c "import setuptools; print(setuptools.msvc.msvc14_get_vc_env('x86'))"'''}
 
     if utils.platform == 'macos':
         add_env['MACOSX_DEPLOYMENT_TARGET'] = '10.13'
