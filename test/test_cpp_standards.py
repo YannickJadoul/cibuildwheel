@@ -11,6 +11,12 @@ cpp_template_project = TemplateProject()
 cpp_template_project.files['setup.py'] = jinja2.Template(r'''
 from setuptools import Extension, setup
 
+from setuptools.command.build_ext import build_ext
+class CustomBuild(build_ext):
+    def build_extensions(self):
+        print("self.compiler", self.compiler)
+        build_ext.build_extensions(self)
+
 import platform
 import sys
 if platform.system() == 'Windows' and sys.version_info >= (3,5,0):
@@ -37,6 +43,7 @@ setup(
     name="spam",
     ext_modules=[Extension('spam', sources=['spam.cpp'], language="c++", extra_compile_args={{ extra_compile_args }})],
     version="0.1.0",
+    cmdclass=dict(build_ext=CustomBuild),
 )
 ''')
 
