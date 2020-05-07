@@ -53,6 +53,8 @@ def test_cpp17():
                        if 'cp27-cp27m-win' not in w
                        and 'pp27-pypy_73-win32' not in w]
 
+    assert any('pp36' in w for w in actual_wheels)
+
     assert set(actual_wheels) == set(expected_wheels)
 
 
