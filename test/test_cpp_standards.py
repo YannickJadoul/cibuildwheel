@@ -11,6 +11,25 @@ cpp_template_project = TemplateProject()
 cpp_template_project.files['setup.py'] = jinja2.Template(r'''
 from setuptools import Extension, setup
 
+import platform
+import sys
+if platform.system() == 'Windows' and sys.version_info >= (3,5,0):
+    import sys
+    print(sys.path)
+    print(setuptools.__file__, setuptools.__version__)
+
+    import distutils._msvccompiler
+    import distutils.util
+
+    print(distutils._msvccompiler._get_vc_env, distutils._msvccompiler._get_vc_env.__module__)
+    print(setuptools.msvc.msvc14_get_vc_env('x64' if 'amd64' in distutils.util.get_platform() else 'x86')['path'])
+
+    compiler = distutils._msvccompiler.MSVCCompiler()
+    print(compiler)
+    compiler.initialize()
+    print(compiler.cc)
+
+
 setup(
     name="spam",
     ext_modules=[Extension('spam', sources=['spam.cpp'], language="c++", extra_compile_args={{ extra_compile_args }})],
@@ -138,8 +157,7 @@ def test_cpp17(tmp_path):
     if os.environ.get('APPVEYOR_BUILD_WORKER_IMAGE', '') == 'Visual Studio 2015':
         pytest.skip('Visual Studio 2015 does not support C++17')
 
-    add_env = {'CIBW_SKIP': 'cp27-win* pp27-win32',
-               'CIBW_BEFORE_BUILD_WINDOWS': '''python -c "import setuptools; print(setuptools.msvc.msvc14_get_vc_env('x86'))"'''}
+    add_env = {'CIBW_SKIP': 'cp27-win* pp27-win32'}
 
     if utils.platform == 'macos':
         add_env['MACOSX_DEPLOYMENT_TARGET'] = '10.13'
