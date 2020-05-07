@@ -29,6 +29,9 @@ if platform.system() == 'Windows' and sys.version_info >= (3,5,0):
     compiler.initialize()
     print(compiler.cc)
 
+    from setuptools.command.build_ext import _build_ext
+    print(_build_ext)
+
 
 setup(
     name="spam",
