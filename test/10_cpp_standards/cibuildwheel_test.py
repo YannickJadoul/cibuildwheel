@@ -43,7 +43,7 @@ def test_cpp17():
     if os.environ.get('APPVEYOR_BUILD_WORKER_IMAGE', '') == 'Visual Studio 2015':
         pytest.skip('Visual Studio 2015 does not support C++17')
 
-    add_env = {'CIBW_SKIP': 'cp27-win* pp27-win32', 'CIBW_ENVIRONMENT': 'STANDARD=17'}
+    add_env = {'CIBW_SKIP': 'cp27-win* pp27-win32', 'CIBW_ENVIRONMENT': 'STANDARD=17', 'PIP_VERBOSE': '1'}
 
     if utils.platform == 'macos':
         add_env['MACOSX_DEPLOYMENT_TARGET'] = '10.13'
@@ -56,6 +56,9 @@ def test_cpp17():
     assert any('pp36' in w for w in actual_wheels)
 
     assert set(actual_wheels) == set(expected_wheels)
+
+    import platform
+    assert platform.system() != 'Windows'
 
 
 def test_cpp17_py27_modern_msvc_workaround():
